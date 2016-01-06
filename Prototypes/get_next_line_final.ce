@@ -6,12 +6,17 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/06 16:09:17 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/05 15:13:37 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
+
+static int		r_value(char **str, int i)
+{
+	*str = NULL;
+	return (i);
+}
 
 static char		*helper(char *str, char **line)
 {
@@ -37,11 +42,10 @@ static char		*helper(char *str, char **line)
 	return (str);
 }
 
-static int		ft_extract_line(int const fd, t_list **str)
+static int		ft_extract_line(int const fd, char **str)
 {
 	int				i;
 	char			*buffer;
-	char			*s;
 	t_list			*list;
 	t_list			*tmp;
 
@@ -51,68 +55,42 @@ static int		ft_extract_line(int const fd, t_list **str)
 		ft_lstend(&list, buffer, i);
 	if (i == -1)
 		return (-1);
-	s = ft_strnew(ft_lstcontentsize(list));
+	*str = ft_strnew(ft_lstcontentsize(list));
 	while (list)
 	{
 		tmp = list;
 		list = list->next;
-		s = ft_strncat(s, tmp->content, tmp->content_size);
+		*str = ft_strncat(*str, tmp->content, tmp->content_size);
 		free(tmp->content);
 		free(tmp);
 	}
-	ft_lstend(str, s, ft_strlen(s) + 1);
 	ft_strdel(&buffer);
 	return (1);
 }
 
-static t_list	*ft_change_link(t_list **str, int fd)
-{
-	t_list		*tmp;
-
-	if ((size_t)fd != (*str)->content_size)
-	{
-		tmp = *str;
-		while (tmp->next && (size_t)fd != tmp->content_size)
-			tmp = tmp->next;
-		if (tmp->next == NULL && (size_t)fd != tmp->content_size)
-		{
-			tmp = *str;
-			if (ft_extract_line(fd, &tmp) == -1)
-				return (NULL);
-			while (tmp->next && (size_t)fd != tmp->content_size)
-				tmp = tmp->next;
-			tmp->content_size = (size_t)fd;
-		}
-		return (tmp);
-	}
-	return (*str);
-}
-
 int				get_next_line(int const fd, char **line)
 {
-	static t_list	*str = NULL;
-	t_list			*tmp;
+	static char		*str = NULL;
 	int				i;
 
 	if (line == NULL)
-	{
-		str = NULL;
 		return (-1);
-	}
 	if (!str)
 	{
-		if ((i = ft_extract_line(fd, &str)) == -1)
+		i = ft_extract_line(fd, &str);
+		if (i == -1)
 			return (-1);
-		str->content_size = (size_t)fd;
+		if (str == NULL)
+		{
+			ft_strdel(&str);
+			return (0);
+		}
 	}
-	if ((tmp = ft_change_link(&str, fd)) == NULL)
-		return (-1);
-	tmp->content = helper(tmp->content, line);
-	if (((char *)tmp->content)[0] == '\0')
-	{
-		str = NULL;
-		return (0);
-	}
-	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
+	str = helper(str, line);
+	if (*str == '\0')
+		return (r_value(&str, 0));
+	*str == '\n' ? str++ : 0;
+	if (*str == '\0')
+		return (r_value(&str, 1));
 	return (1);
 }
