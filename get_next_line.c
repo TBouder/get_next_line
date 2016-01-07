@@ -6,24 +6,26 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/07 17:28:11 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/07 19:03:14 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static int		ft_freestr(t_list **str, int i, int rv, int fd)
-{
-	t_list		*tmp;
+#include <stdio.h>//
 
+static int		ft_freestr(t_list **str, int i, int rv, t_list *tmp)
+{
 	if (i == 1)
 	{
 		tmp = *str;
 		if (ft_lstlen(tmp) != 1)
-			while (tmp->next)
-				tmp = (tmp)->next;
-		if ((tmp)->content_size != (size_t)fd)
-			return (rv);
+			while (tmp)
+			{
+				if (((char *)tmp->content)[0] != '\0')
+					return (rv);
+				tmp = tmp->next;
+			}
 		while (str && i == 1)
 		{
 			(*str)->content--;
@@ -128,7 +130,7 @@ int				get_next_line(int const fd, char **line)
 	int				i;
 
 	if (line == NULL)
-		return (ft_freestr(&str, 0, -1, fd));
+		return (ft_freestr(&str, 0, -1, NULL));
 	if (!str)
 	{
 		if ((i = ft_extract_line(fd, &str, NULL)) == -1)
@@ -139,9 +141,9 @@ int				get_next_line(int const fd, char **line)
 		return (-1);
 	tmp->content = ft_helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0')
-		return (ft_freestr(&str, 0, 0, fd));
+		return (ft_freestr(&str, 0, 0, NULL));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
 	if (((char *)tmp->content)[0] == '\0')
-		return (ft_freestr(&str, 1, 1, fd));
+		return (ft_freestr(&str, 1, 1, NULL));
 	return (1);
 }
