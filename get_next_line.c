@@ -6,14 +6,14 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/07 16:31:24 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/07 16:38:09 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-int			ft_freestr(t_list **str, int i, int rv)
+static int		ft_freestr(t_list **str, int i, int rv)
 {
 	if (i == 1)
 	{
@@ -28,7 +28,7 @@ int			ft_freestr(t_list **str, int i, int rv)
 	return (rv);
 }
 
-static char		*helper(char *str, char **line)
+static char		*ft_helper(char *str, char **line)
 {
 	char	*dst;
 	int		i;
@@ -57,11 +57,10 @@ static char		*helper(char *str, char **line)
 	return (str);
 }
 
-static int		ft_extract_line(int const fd, t_list **str)
+static int		ft_extract_line(int const fd, t_list **str, char *s)
 {
 	int				i;
 	char			*buffer;
-	char			*s;
 	t_list			*list;
 	t_list			*tmp;
 
@@ -83,7 +82,7 @@ static int		ft_extract_line(int const fd, t_list **str)
 		free(tmp);
 	}
 	ft_lstend(str, s, ft_strlen(s) + 1);
-	ft_strdel(&s);	
+	ft_strdel(&s);
 	return (1);
 }
 
@@ -99,7 +98,7 @@ static t_list	*ft_change_link(t_list **str, int fd)
 		if (tmp->next == NULL && (size_t)fd != tmp->content_size)
 		{
 			tmp = *str;
-			if (ft_extract_line(fd, &tmp) == -1)
+			if (ft_extract_line(fd, &tmp, NULL) == -1)
 				return (NULL);
 			while (tmp->next && (size_t)fd != tmp->content_size)
 				tmp = tmp->next;
@@ -120,13 +119,13 @@ int				get_next_line(int const fd, char **line)
 		return (ft_freestr(&str, 0, -1));
 	if (!str)
 	{
-		if ((i = ft_extract_line(fd, &str)) == -1)
+		if ((i = ft_extract_line(fd, &str, NULL)) == -1)
 			return (-1);
 		str->content_size = (size_t)fd;
 	}
 	if ((tmp = ft_change_link(&str, fd)) == NULL)
 		return (-1);
-	tmp->content = helper(tmp->content, line);
+	tmp->content = ft_helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0')
 		return (ft_freestr(&str, 0, 0));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
