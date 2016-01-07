@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/07 22:10:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/08 00:51:27 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,14 +85,13 @@ static int		ft_extract_line(int const fd, t_list **str, char *s)
 		return (-1);
 	s = ft_strnew(ft_lstcontentsize(list) + 1);
 	s[0] = '\2';
-	while (list)
+	tmp = list;
+	while (tmp)
 	{
-		tmp = list;
-		list = list->next;
 		s = ft_strncat(s, tmp->content, tmp->content_size);
-		free(tmp->content);
-		free(tmp);
+		tmp = tmp->next;
 	}
+	ft_lstclr(&list);
 	ft_lstend(str, s, ft_strlen(s) + 1);
 	ft_strdel(&s);
 	return (1);
