@@ -6,12 +6,27 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/06 16:09:17 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/07 16:31:24 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
+
+int			ft_freestr(t_list **str, int i, int rv)
+{
+	if (i == 1)
+	{
+		(*str)->content--;
+		while (((char *)(*str)->content)[0] != '\2')
+			(*str)->content--;
+		ft_lstclr(str);
+		*str = NULL;
+	}
+	else
+		*str = NULL;
+	return (rv);
+}
 
 static char		*helper(char *str, char **line)
 {
@@ -24,6 +39,11 @@ static char		*helper(char *str, char **line)
 	j = 0;
 	len = ft_linelen(str, 0);
 	dst = ft_strnew(len);
+	if (str[0] == '\2')
+	{
+		j++;
+		len--;
+	}
 	while (i < len)
 	{
 		dst[i] = str[j];
@@ -49,9 +69,11 @@ static int		ft_extract_line(int const fd, t_list **str)
 	buffer = ft_strnew(BUFF_SIZE);
 	while ((i = read(fd, buffer, BUFF_SIZE)) > 0)
 		ft_lstend(&list, buffer, i);
+	ft_strdel(&buffer);
 	if (i == -1)
 		return (-1);
-	s = ft_strnew(ft_lstcontentsize(list));
+	s = ft_strnew(ft_lstcontentsize(list) + 1);
+	s[0] = '\2';
 	while (list)
 	{
 		tmp = list;
@@ -61,7 +83,7 @@ static int		ft_extract_line(int const fd, t_list **str)
 		free(tmp);
 	}
 	ft_lstend(str, s, ft_strlen(s) + 1);
-	ft_strdel(&buffer);
+	ft_strdel(&s);	
 	return (1);
 }
 
@@ -95,10 +117,7 @@ int				get_next_line(int const fd, char **line)
 	int				i;
 
 	if (line == NULL)
-	{
-		str = NULL;
-		return (-1);
-	}
+		return (ft_freestr(&str, 0, -1));
 	if (!str)
 	{
 		if ((i = ft_extract_line(fd, &str)) == -1)
@@ -109,10 +128,9 @@ int				get_next_line(int const fd, char **line)
 		return (-1);
 	tmp->content = helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0')
-	{
-		str = NULL;
-		return (0);
-	}
+		return (ft_freestr(&str, 0, 0));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
+	if (((char *)tmp->content)[0] == '\0' && ft_lstlen(str) == 1)
+		return (ft_freestr(&str, 1, 1));
 	return (1);
 }
