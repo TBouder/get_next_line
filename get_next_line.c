@@ -6,25 +6,37 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/07 16:38:09 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/07 17:28:11 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-static int		ft_freestr(t_list **str, int i, int rv)
+static int		ft_freestr(t_list **str, int i, int rv, int fd)
 {
+	t_list		*tmp;
+
 	if (i == 1)
 	{
-		(*str)->content--;
-		while (((char *)(*str)->content)[0] != '\2')
+		tmp = *str;
+		if (ft_lstlen(tmp) != 1)
+			while (tmp->next)
+				tmp = (tmp)->next;
+		if ((tmp)->content_size != (size_t)fd)
+			return (rv);
+		while (str && i == 1)
+		{
 			(*str)->content--;
+			while (((char *)(*str)->content)[0] != '\2')
+				(*str)->content--;
+			if ((*str)->next == NULL)
+				i = 0;
+			*str = (*str)->next;
+		}
 		ft_lstclr(str);
-		*str = NULL;
+		ft_lstclr(&tmp);
 	}
-	else
-		*str = NULL;
+	*str = NULL;
 	return (rv);
 }
 
@@ -116,7 +128,7 @@ int				get_next_line(int const fd, char **line)
 	int				i;
 
 	if (line == NULL)
-		return (ft_freestr(&str, 0, -1));
+		return (ft_freestr(&str, 0, -1, fd));
 	if (!str)
 	{
 		if ((i = ft_extract_line(fd, &str, NULL)) == -1)
@@ -127,9 +139,9 @@ int				get_next_line(int const fd, char **line)
 		return (-1);
 	tmp->content = ft_helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0')
-		return (ft_freestr(&str, 0, 0));
+		return (ft_freestr(&str, 0, 0, fd));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
-	if (((char *)tmp->content)[0] == '\0' && ft_lstlen(str) == 1)
-		return (ft_freestr(&str, 1, 1));
+	if (((char *)tmp->content)[0] == '\0')
+		return (ft_freestr(&str, 1, 1, fd));
 	return (1);
 }
