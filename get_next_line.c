@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/01/08 00:51:27 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/01/08 13:18:25 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,12 +19,12 @@ static int		ft_freestr(t_list **str, int rv, t_list *tmp)
 	i = 1;
 	tmp = *str;
 	if (ft_lstlen(tmp) != 1)
-	while (tmp)
-	{
-		if (((char *)tmp->content)[0] != '\0')
-			return (rv);
-		tmp = tmp->next;
-	}
+		while (tmp)
+		{
+			if (((char *)tmp->content)[0] != '\0')
+				return (rv);
+			tmp = tmp->next;
+		}
 	while (str && i == 1)
 	{
 		(*str)->content--;
