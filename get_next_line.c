@@ -6,7 +6,7 @@
 /*   By: Tbouder <Tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/02/04 02:07:57 by Tbouder          ###   ########.fr       */
+/*   Updated: 2016/02/04 12:54:37 by Tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,10 +139,10 @@ int				get_next_line(int const fd, char **line)
 	if (((char *)tmp->content)[i] == '\0')
 		i = 0;
 	tmp->content = ft_helper(tmp->content, line);
-	if (((char *)tmp->content)[0] == '\0' && i ==0)
+	if (((char *)tmp->content)[0] == '\0' && i == 0)
 		return (ft_freestr(&str, 0, NULL));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
-	if (((char *)tmp->content)[0] == '\0' )
+	if (((char *)tmp->content)[0] == '\0')
 		return (ft_freestr(&str, 1, NULL));
 	return (1);
 }
