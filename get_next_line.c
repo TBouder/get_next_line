@@ -6,7 +6,7 @@
 /*   By: Tbouder <Tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/02/04 12:54:37 by Tbouder          ###   ########.fr       */
+/*   Updated: 2016/02/04 18:57:13 by Tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,31 +69,29 @@ static char		*ft_helper(char *str, char **line)
 	return (str);
 }
 
-static int		ft_extract_line(int const fd, t_list **str, char *s)
+static int		ft_extract_line(int const fd, t_list **str, t_list *list)
 {
 	int				i;
 	char			*buffer;
-	t_list			*list;
 	t_list			*tmp;
 
-	list = NULL;
 	buffer = ft_strnew(BUFF_SIZE);
-	while ((i = read(fd, buffer, BUFF_SIZE)) > 0)
+	while ((i = read(fd, buffer, BUFF_SIZE)) && buffer[0] != '\0')
 		ft_lstend(&list, buffer, i);
 	ft_strdel(&buffer);
 	if (i == -1)
 		return (-1);
-	s = ft_strnew(ft_lstcontentsize(list) + 1);
-	s[0] = '\2';
+	buffer = ft_strnew(ft_lstcontentsize(list) + 1);
+	buffer[0] = '\2';
 	tmp = list;
 	while (tmp)
 	{
-		s = ft_strncat(s, tmp->content, tmp->content_size);
+		buffer = ft_strncat(buffer, tmp->content, tmp->content_size);
 		tmp = tmp->next;
 	}
 	ft_lstclr(&list);
-	ft_lstend(str, s, ft_strlen(s) + 1);
-	ft_strdel(&s);
+	ft_lstend(str, buffer, ft_strlen(buffer) + 1);
+	ft_strdel(&buffer);
 	return (1);
 }
 
@@ -136,7 +134,7 @@ int				get_next_line(int const fd, char **line)
 	}
 	if ((tmp = ft_change_link(&str, fd)) == NULL)
 		return (-1);
-	if (((char *)tmp->content)[i] == '\0')
+	if (((char *)tmp->content)[1] == '\0')
 		i = 0;
 	tmp->content = ft_helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0' && i == 0)
