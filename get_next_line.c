@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: Tbouder <Tbouder@student.42.fr>            +#+  +:+       +#+        */
+/*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/02/18 19:50:02 by Tbouder          ###   ########.fr       */
+/*   Updated: 2016/04/19 18:05:33 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,21 @@
 ** if an error occurs (bad file descriptor or bad storing parameters LINE).
 */
 
-static int		ft_freestr(t_list **str, int rv, t_list *tmp)
+static int		ft_freestr(t_list **str, int rv, int i)
 {
-	int		i;
+	t_list *tmp = NULL;
 
-	i = 1;
 	tmp = *str;
-	if (ft_lstlen(tmp) != 1)
-		while (tmp)
+	if (ft_lstlen(*str) != 1)
+	{
+		while (*str)
 		{
-			if (((char *)tmp->content)[0] != '\0')
+			if (((char *)(*str)->content)[0] != '\0')
 				return (rv);
-			tmp = tmp->next;
+			(*str) = (*str)->next;
 		}
+	}
+	str = &tmp;
 	while (str && i == 1)
 	{
 		(*str)->content--;
@@ -43,7 +45,6 @@ static int		ft_freestr(t_list **str, int rv, t_list *tmp)
 		*str = (*str)->next;
 	}
 	ft_lstclr(str);
-	ft_lstclr(&tmp);
 	*str = NULL;
 	return (rv);
 }
@@ -146,9 +147,9 @@ int				get_next_line(int const fd, char **line)
 		i = 0;
 	tmp->content = ft_helper(tmp->content, line);
 	if (((char *)tmp->content)[0] == '\0' && i == 0)
-		return (ft_freestr(&str, 0, NULL));
+		return (ft_freestr(&str, 0, 1));
 	((char *)tmp->content)[0] == '\n' ? (tmp->content)++ : 0;
 	if (((char *)tmp->content)[0] == '\0')
-		return (ft_freestr(&str, 1, NULL));
+		return (ft_freestr(&str, 1, 1));
 	return (1);
 }
