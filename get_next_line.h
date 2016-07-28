@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/07/28 20:20:43 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/07/28 21:08:29 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int		get_next_line(int const fd, char **line);
 
 typedef struct		s_gnl
 {
-	t_list			*list;
+	struct t_list	*list;
 	char			*str;
 	char			*line;
 	char			*tmp;
