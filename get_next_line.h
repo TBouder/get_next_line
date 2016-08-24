@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/08/23 00:15:04 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/08/24 15:17:26 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,7 @@ typedef struct		s_gnl
 	char			*tmp;
 	char			*buff;
 	int				i;
-	int				l_len;
-	int				is_ln;
+	int				y;
 }					t_gnl;
 
 #endif
