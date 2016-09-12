@@ -6,7 +6,7 @@
 /*   By: tbouder <tbouder@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2015/12/17 11:59:39 by tbouder           #+#    #+#             */
-/*   Updated: 2016/09/10 11:35:44 by tbouder          ###   ########.fr       */
+/*   Updated: 2016/09/12 15:07:52 by tbouder          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 # define GET_NEXT_LINE_H
 
 # include "../libft.h"
-# define BUFF_SIZE 2000000
+# define BUFF_SIZE	2000000
 
-int		get_next_line(int const fd, char **line);
+int					get_next_line(int const fd, char **line);
 
 typedef struct		s_gnl
 {
